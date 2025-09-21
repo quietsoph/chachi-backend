@@ -1,0 +1,61 @@
+@import '../../styles/variables';
+
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: $default-padding;
+
+  .auth-card {
+    width: 100%;
+    max-width: $mobile-breakpoint;
+    border-radius: $large-border-radius;
+    box-shadow: 0 10px 30px rgb(0 0 0 / 10%);
+    border: none;
+
+    .ant-card-body {
+      padding: $large-padding;
+
+      @media (max-width: $mobile-breakpoint) {
+        padding: $default-padding;
+      }
+    }
+
+    .app-icon {
+      font-size: 48px;
+      color: #1890ff;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .ant-typography-title {
+      margin-bottom: 8px;
+      color: #262626;
+    }
+
+    .input-hint {
+      font-size: 12px;
+      margin-top: 4px;
+      display: block;
+    }
+
+    .ant-input-affix-wrapper {
+      border-radius: $default-border-radius;
+    }
+
+    .ant-btn {
+      border-radius: $default-border-radius;
+    }
+
+    &__header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    &__form {
+      width: 100%;
+    }
+  }
+}

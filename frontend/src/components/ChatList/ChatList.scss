@@ -1,0 +1,49 @@
+@import '../../styles/variables';
+
+.friend-search {
+  padding: 16px;
+  border-bottom: 1px solid #d9d9d9;
+
+  .ant-typography {
+    margin-bottom: 12px;
+  }
+}
+
+.chats-list {
+  padding: 16px;
+
+  .ant-typography {
+    margin: 0 !important;
+  }
+
+  .chat-item {
+    cursor: pointer;
+    transition: all 0.3s;
+
+    &:hover {
+      background: #e6f7ff;
+    }
+
+    &.selected {
+      background: #1890ff;
+      color: white;
+
+      .ant-list-item-meta-title {
+        color: white !important;
+      }
+
+      .ant-badge-status-dot {
+        border-color: white;
+      }
+    }
+
+    .ant-list-item-meta {
+      align-items: center;
+
+      .ant-list-item-meta-title {
+        margin-bottom: 0;
+        font-weight: 500;
+      }
+    }
+  }
+}

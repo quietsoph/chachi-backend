@@ -1,21 +1,39 @@
 import { BrowserRouter, Routes as RouterRoutes, Route } from 'react-router';
-import { io } from 'socket.io-client';
+import { ToastContainer } from 'react-toastify';
 
-import config from '../config';
+import SocketProvider from '../contextProviders/SocketProvider';
+import UserProvider from '../contextProviders/UserProvider';
+
+import 'react-toastify/dist/ReactToastify.css';
 
 // Routes
-import Chat from './Chat';
+import Login from './Login';
 import Home from './Home';
-
-const socket = io(config.SOCKET_ENDPOINT, { transports: ['websocket', 'polling', 'flashsocket'] });
+import Chat from './Chat';
 
 export default function Routes() {
   return (
-    <BrowserRouter>
-      <RouterRoutes>
-        <Route path="/" element={<Home socket={socket} />} />
-        <Route path="/chat/:userId" element={<Chat socket={socket} />} />
-      </RouterRoutes>
-    </BrowserRouter>
+    <SocketProvider>
+      <UserProvider>
+        <BrowserRouter>
+          <RouterRoutes>
+              <Route path="/login" element={<Login />} />
+              <Route path="/" element={<Home />} />
+              <Route path="/chat" element={<Chat />} />
+          </RouterRoutes>
+        </BrowserRouter>
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
+      </UserProvider>
+    </SocketProvider>
   );
 }

@@ -1,0 +1,58 @@
+@import '../../styles/variables';
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: $small-gap;
+  }
+
+  .app-title-wrapper {
+    margin: 0;
+    display: inline-flex;
+    gap: $small-gap;
+    color: $off-white !important;
+
+    .ant-typography {
+      color: $off-white !important;
+      margin: 0;
+      padding: 0;
+
+      @media (max-width: $mobile-breakpoint) {
+        display: none;
+      }
+    }
+  }
+
+  .mobile-menu-btn {
+    color: $off-white !important;
+    border: none;
+    font-size: 18px;
+
+    &:hover {
+      color: $white !important;
+    }
+  }
+
+  .username-text {
+    color: $off-white;
+
+    @media (max-width: $mobile-breakpoint) {
+      display: none;
+    }
+  }
+
+  .logout-btn {
+    color: $off-white;
+    border: none;
+
+    &:hover {
+      color: white !important;
+    }
+  }
+}
