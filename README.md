@@ -14,6 +14,9 @@ This is a minimal one-to-one text chat application built to demonstrate high-qua
 
 This is intentionally a focused implementation to showcase code quality and architectural decisions. I'd be happy to discuss scalability, performance, and production considerations in our next conversation.
 
+## View Live Demo
+[View Live Demo](https://drive.google.com/file/d/1CXxo6rVShYykEyzeZtlx_PLLuFvs6QJE/view?usp=drive_link)
+
 ## Core functionalities
 - User Simple Authentication: Username-based join system (5+ chars, no spaces)
 - Real-time Friends List: See online users instantly.
