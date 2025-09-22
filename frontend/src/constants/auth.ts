@@ -2,8 +2,8 @@ export const DEFAULT_TIMEOUT = 10000;
 export const TIMEOUT = 'Connection timeout. Please try again';
 export const AUTH_ACTIONS = {
   LOGIN: 'Login',
-  LOGOUT: 'Logout',
-}
+  LOGOUT: 'Logout'
+};
 
 export const AUTH_ERRORS = {
   NO_CONNECTION: 'Connections not established',
@@ -13,7 +13,7 @@ export const AUTH_ERRORS = {
     LENGTH: 'Username must have at least 5 characters',
     SPACE: 'Username must not have any spaces'
   }
-}
+};
 
 export const FORM_CONTENT = {
   TITLE: 'Join Chat',
@@ -24,6 +24,6 @@ export const FORM_CONTENT = {
   },
   BUTTON: {
     TEXT: 'Join Chat',
-    LOADING: 'Loading...',
+    LOADING: 'Loading...'
   }
-}
+};

@@ -21,7 +21,7 @@ const Login = () => {
 
   const handleJoinChat = async () => {
     try {
-      const success = await joinChat({username: usernameInput});
+      const success = await joinChat({ username: usernameInput });
       if (success) {
         // Set the current user globally
         setCurrentUser(usernameInput.trim());
@@ -75,15 +75,7 @@ const Login = () => {
             </Text>
           </div>
 
-          {error && (
-            <Alert
-              message={error}
-              type="error"
-              showIcon
-              closable
-              onClose={clearError}
-            />
-          )}
+          {error && <Alert message={error} type="error" showIcon closable onClose={clearError} />}
 
           <Button
             type="primary"

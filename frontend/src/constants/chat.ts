@@ -1,9 +1,9 @@
 export const SEARCH_FRIEND_ERRORS = {
-  NO_NAME: "Please enter a username",
+  NO_NAME: 'Please enter a username',
   SELF_CHAT: 'You cannot add yourself as a friend',
   TOO_SHORT: 'Username must be at least 5 characters',
   SPACES: 'Username cannot have spaces'
-}
+};
 
 export const CHAT_CONTENT = {
   TYPING: {

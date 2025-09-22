@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState, ReactNode } from "react";
+import { useEffect, useRef, useState, ReactNode } from 'react';
 import { io, Socket } from 'socket.io-client';
 
-import config from "../config";
+import config from '../config';
 
-import SocketContext from "../contexts/SocketContext";
+import SocketContext from '../contexts/SocketContext';
 
 const SocketProvider = ({ children }: { children: ReactNode }) => {
   const socketRef = useRef<Socket | null>(null);

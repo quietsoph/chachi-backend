@@ -91,8 +91,7 @@ const Chat = () => {
 
     // Message received
     const handleMessage = (message: Message) => {
-      setMessages(prev => [...prev, message]);
-
+      setMessages((prev) => [...prev, message]);
     };
 
     // Typing indicators
@@ -105,7 +104,7 @@ const Chat = () => {
     // Error handling
     const handleError = (error: string) => {
       toast.error(error, {
-        position: "top-right",
+        position: 'top-right'
       });
       navigate('/login');
     };
@@ -120,7 +119,6 @@ const Chat = () => {
       socket.off('error', handleError);
     };
   }, [socket, currentUser, selectedFriend, navigate]);
-
 
   const handleSendMessage = () => {
     if (!socket || !selectedFriend || !messageInput.trim()) return;
@@ -140,7 +138,7 @@ const Chat = () => {
       delivered: false
     };
 
-    setMessages(prev => [...prev, localMessage]);
+    setMessages((prev) => [...prev, localMessage]);
     socket.emit('send_private_message', messageData);
     setMessageInput('');
 
@@ -191,6 +189,6 @@ const Chat = () => {
       />
     </div>
   );
-}
+};
 
 export default Chat;

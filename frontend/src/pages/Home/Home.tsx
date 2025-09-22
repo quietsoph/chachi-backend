@@ -35,7 +35,6 @@ const Home = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-
   const handleSelectFriend = (friendUsername: string) => {
     // Navigate to chat page with selected friend
     navigate(`/chat?friend=${friendUsername}`);
@@ -66,10 +65,7 @@ const Home = () => {
       </div>
 
       <div className="chat-list-container">
-        <ChatList
-          selectedFriend={null}
-          onSelectFriend={handleSelectFriend}
-        />
+        <ChatList selectedFriend={null} onSelectFriend={handleSelectFriend} />
       </div>
     </div>
   );

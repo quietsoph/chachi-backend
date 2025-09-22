@@ -17,7 +17,7 @@ const UserProvider = ({ children }: UserProviderProps) => {
     if (!socket || !currentUser) return;
 
     // Handle when a new user joins
-    const handleUserJoined = (data: {username: string, onlineUsers: string[]}) => {
+    const handleUserJoined = (data: { username: string; onlineUsers: string[] }) => {
       const { username, onlineUsers } = data;
 
       const friends = onlineUsers.filter((user) => user !== currentUser);
@@ -26,7 +26,7 @@ const UserProvider = ({ children }: UserProviderProps) => {
       // Show notification to all other online users
       if (username !== currentUser) {
         toast.success(`${username} joined the chat!`, {
-          position: "top-right",
+          position: 'top-right',
           autoClose: 3000
         });
       }
@@ -43,14 +43,10 @@ const UserProvider = ({ children }: UserProviderProps) => {
     currentUser,
     friends,
     setCurrentUser,
-    setFriends,
+    setFriends
   };
 
-  return (
-    <UserContext.Provider value={contextValue}>
-      {children}
-    </UserContext.Provider>
-  );
+  return <UserContext.Provider value={contextValue}>{children}</UserContext.Provider>;
 };
 
 export default UserProvider;

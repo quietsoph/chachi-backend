@@ -9,7 +9,7 @@ export interface ClientToServerEvents {
 
 export interface ServerToClientEvents {
   auth_success: (username: string) => void;
-  user_joined: (data: {username: string, onlineUsers: string[]}) => void;
+  user_joined: (data: { username: string; onlineUsers: string[] }) => void;
   user_left: (username: string) => void;
   online_users: (users: string[]) => void;
   receive_private_message: (message: Message) => void;

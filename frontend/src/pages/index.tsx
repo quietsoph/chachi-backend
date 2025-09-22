@@ -17,9 +17,9 @@ export default function Routes() {
       <UserProvider>
         <BrowserRouter>
           <RouterRoutes>
-              <Route path="/login" element={<Login />} />
-              <Route path="/" element={<Home />} />
-              <Route path="/chat" element={<Chat />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/" element={<Home />} />
+            <Route path="/chat" element={<Chat />} />
           </RouterRoutes>
         </BrowserRouter>
         <ToastContainer

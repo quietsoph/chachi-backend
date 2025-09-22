@@ -5,18 +5,8 @@ import { Server as IOServer } from 'socket.io';
 import { v4 as uuidv4 } from 'uuid';
 
 import CONFIG from './config';
-import {
-  Message,
-  PrivateMessageData,
-  User,
-  UserJoinData
-} from './types/chat';
-import {
-  ClientToServerEvents,
-  ServerToClientEvents,
-  InterServerEvents,
-  SocketData
-} from './types/socket';
+import { Message, PrivateMessageData, User, UserJoinData } from './types/chat';
+import { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData } from './types/socket';
 
 import { hasSpaces } from './utils/string';
 
@@ -26,8 +16,8 @@ const router = express.Router();
 const httpServer = http.createServer(app);
 const io = new IOServer<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>(httpServer, {
   cors: {
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST"],
+    origin: 'http://localhost:5173',
+    methods: ['GET', 'POST'],
     credentials: true
   }
 });
@@ -41,29 +31,28 @@ app.use(router);
 
 io.on('connection', (socket) => {
   // handle a new user joins the chat app
-  socket.on('user_join', (data:UserJoinData) => {
-    
+  socket.on('user_join', (data: UserJoinData) => {
     const { username } = data;
     const trimmedUsername = username.trim();
 
     if (!trimmedUsername) {
       socket.emit('error', 'Username is required');
       return;
-    };
+    }
 
     if (hasSpaces(trimmedUsername)) {
-      socket.emit('error', 'Username cannot have any spaces')
+      socket.emit('error', 'Username cannot have any spaces');
     }
 
     if (trimmedUsername.length < 5) {
       socket.emit('error', 'Username must have at least 5 characters');
       return;
-    };
+    }
 
     if (connectedUsers.has(trimmedUsername)) {
       socket.emit('error', 'Username already taken');
       return;
-    };
+    }
 
     //otherwise, store users
     const userData: User = {
@@ -83,9 +72,8 @@ io.on('connection', (socket) => {
 
     io.emit('user_joined', {
       username: trimmedUsername,
-      onlineUsers,
+      onlineUsers
     });
-
   });
 
   // handle one user send messages to another
@@ -101,7 +89,7 @@ io.on('connection', (socket) => {
     const { to, content } = data;
 
     if (!content || content.trim().length === 0) {
-      socket.emit('error', "Message cannot be empty");
+      socket.emit('error', 'Message cannot be empty');
       return;
     }
 
@@ -144,7 +132,7 @@ io.on('connection', (socket) => {
 
     recipientSocket.emit('user_typing', {
       from: senderUsername,
-      isTyping: true,
+      isTyping: true
     });
   });
 
@@ -161,9 +149,9 @@ io.on('connection', (socket) => {
 
     recipientSocket.emit('user_typing', {
       from: senderUsername,
-      isTyping: false,
+      isTyping: false
     });
-  })
+  });
 
   // handle disconnect
   socket.on('disconnect', () => {

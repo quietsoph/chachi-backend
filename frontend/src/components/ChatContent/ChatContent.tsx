@@ -47,12 +47,7 @@ const ChatContent = ({
         <div className="chat-container">
           <div className="chat-header-info">
             <div className="chat-header-content">
-              <Button
-                type="text"
-                icon={<ArrowLeftOutlined />}
-                onClick={onBackClick}
-                className="back-btn"
-              />
+              <Button type="text" icon={<ArrowLeftOutlined />} onClick={onBackClick} className="back-btn" />
               <Title level={5} className="friend-title">
                 <UserOutlined /> {selectedFriend}
                 {friendTyping && <Text type="secondary">{CHAT_CONTENT.TYPING.INDICATOR}</Text>}
@@ -62,21 +57,15 @@ const ChatContent = ({
 
           <div className="messages-container" ref={messagesContainerRef}>
             {messages
-              .filter(msg =>
-                (msg.from === currentUser && msg.to === selectedFriend) ||
-                (msg.from === selectedFriend && msg.to === currentUser)
+              .filter(
+                (msg) =>
+                  (msg.from === currentUser && msg.to === selectedFriend) ||
+                  (msg.from === selectedFriend && msg.to === currentUser)
               )
-              .map(message => (
-                <div
-                  key={message.id}
-                  className={`message ${message.from === currentUser ? 'own' : 'other'}`}
-                >
-                  <div className="message-content">
-                    {message.content}
-                  </div>
-                  <div className="message-time">
-                    {new Date(message.timestamp).toLocaleTimeString()}
-                  </div>
+              .map((message) => (
+                <div key={message.id} className={`message ${message.from === currentUser ? 'own' : 'other'}`}>
+                  <div className="message-content">{message.content}</div>
+                  <div className="message-time">{new Date(message.timestamp).toLocaleTimeString()}</div>
                 </div>
               ))}
           </div>
@@ -128,7 +117,8 @@ const ChatContent = ({
             style={{
               fontSize: isMobile ? CHAT_STYLES.ICON_SIZE.MOBILE : CHAT_STYLES.ICON_SIZE.DESKTOP,
               color: CHAT_STYLES.ICON_COLOR
-            }} />
+            }}
+          />
           <Title level={isMobile ? 5 : 4} type="secondary">
             {isMobile ? CHAT_CONTENT.NO_CHAT_SELECTED.MOBILE : CHAT_CONTENT.NO_CHAT_SELECTED.DESKTOP}
           </Title>

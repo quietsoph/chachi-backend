@@ -16,40 +16,24 @@ interface ChatHeaderProps {
   onLogout: () => void;
 }
 
-const ChatHeader = ({
-  currentUser,
-  isConnected,
-  isMobile,
-  onMobileMenuToggle,
-  onLogout
-}: ChatHeaderProps) => {
+const ChatHeader = ({ currentUser, isConnected, isMobile, onMobileMenuToggle, onLogout }: ChatHeaderProps) => {
   return (
     <div className="header-content">
       <div className="header-left">
         {isMobile && (
-          <Button
-            type="text"
-            icon={<MenuOutlined />}
-            onClick={onMobileMenuToggle}
-            className="mobile-menu-btn"
-          />
+          <Button type="text" icon={<MenuOutlined />} onClick={onMobileMenuToggle} className="mobile-menu-btn" />
         )}
         <div className="app-title-wrapper">
-          <MessageOutlined/>
-          <Title level={4}>
-            {APP_TITLE}
-          </Title>
+          <MessageOutlined />
+          <Title level={4}>{APP_TITLE}</Title>
         </div>
       </div>
       <Space>
-        <Text strong className="username-text">{currentUser}</Text>
+        <Text strong className="username-text">
+          {currentUser}
+        </Text>
         <Badge status={isConnected ? 'success' : 'error'} />
-        <Button
-          type="text"
-          icon={<LogoutOutlined />}
-          onClick={onLogout}
-          className="logout-btn"
-        >
+        <Button type="text" icon={<LogoutOutlined />} onClick={onLogout} className="logout-btn">
           {!isMobile && AUTH_ACTIONS.LOGOUT}
         </Button>
       </Space>

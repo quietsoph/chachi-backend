@@ -14,14 +14,13 @@ interface ChatListProps {
   onSelectFriend: (friendName: string) => void;
 }
 
-const ChatList = ({
-  selectedFriend,
-  onSelectFriend,
-}: ChatListProps) => {
+const ChatList = ({ selectedFriend, onSelectFriend }: ChatListProps) => {
   const { friends } = useUser();
   return (
     <div className="chats-list">
-      <Title level={5}>{CHAT_LIST_CONTENT.TITLE} ({friends.length})</Title>
+      <Title level={5}>
+        {CHAT_LIST_CONTENT.TITLE} ({friends.length})
+      </Title>
       <List
         dataSource={friends}
         renderItem={(friendName) => (
@@ -34,7 +33,7 @@ const ChatList = ({
               title={
                 <Space>
                   {friendName}
-                  <Badge status='success' />
+                  <Badge status="success" />
                 </Space>
               }
             />
