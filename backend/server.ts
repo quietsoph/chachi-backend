@@ -105,7 +105,6 @@ io.on('connection', (socket) => {
       return;
     }
 
-    // To do: send messages to an offline user
     if (!connectedUsers.has(to)) {
       socket.emit('error', 'Users not found or offline');
       return;

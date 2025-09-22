@@ -21,7 +21,7 @@
       }
 
       .back-btn {
-        color: #1890ff;
+        color: $primary-blue;
         font-size: 16px;
         padding: 4px;
         margin-right: $small-gap;
@@ -58,7 +58,7 @@
           align-items: flex-end;
 
           .message-content {
-            background: #1890ff;
+            background: $primary-blue;
             color: $white;
             border-radius: 18px 18px 6px;
           }
@@ -177,7 +177,7 @@
   }
 }
 
-@media (width <= 480px) {
+@media (max-width: $mobile-breakpoint) {
   .chat-content {
     .chat-container {
       .messages-container {

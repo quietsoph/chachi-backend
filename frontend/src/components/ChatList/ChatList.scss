@@ -25,7 +25,7 @@
     }
 
     &.selected {
-      background: #1890ff;
+      background: $primary-blue;
       color: white;
 
       .ant-list-item-meta-title {
