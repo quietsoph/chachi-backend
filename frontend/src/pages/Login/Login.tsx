@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Card, Input, Button, Alert, Typography, Space } from 'antd';
-import { UserOutlined, MessageOutlined } from '@ant-design/icons';
+import { UserOutlined } from '@ant-design/icons';
 
 import { useAuth } from '../../hooks/useAuth';
 import { useUser } from '../../hooks/useUser';
 import { FORM_CONTENT } from '../../constants/auth';
 
+import LoginHeader from '../../components/LoginHeader';
+
 import './Login.scss';
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 const Login = () => {
   const [usernameInput, setUsernameInput] = useState('');
@@ -52,11 +54,7 @@ const Login = () => {
   return (
     <div className="login-container">
       <Card className="auth-card">
-        <div className="auth-card__header">
-          <MessageOutlined className="app-icon" />
-          <Title level={2}>{FORM_CONTENT.TITLE}</Title>
-          <Text type="secondary">{FORM_CONTENT.SUBTITLE}</Text>
-        </div>
+        <LoginHeader />
 
         <Space direction="vertical" size="large" className="auth-card__form">
           <div>

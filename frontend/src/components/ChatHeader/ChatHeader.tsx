@@ -1,3 +1,4 @@
+import React from 'react';
 import { Button, Typography, Space, Badge } from 'antd';
 import { MenuOutlined, MessageOutlined, LogoutOutlined } from '@ant-design/icons';
 
@@ -16,7 +17,15 @@ interface ChatHeaderProps {
   onLogout: () => void;
 }
 
-const ChatHeader = ({ currentUser, isConnected, isMobile, onMobileMenuToggle, onLogout }: ChatHeaderProps) => {
+const ChatHeader = React.memo((
+  {
+    currentUser,
+    isConnected,
+    isMobile,
+    onMobileMenuToggle,
+    onLogout,
+  }: ChatHeaderProps
+) => {
   return (
     <div className="header-content">
       <div className="header-left">
@@ -39,6 +48,6 @@ const ChatHeader = ({ currentUser, isConnected, isMobile, onMobileMenuToggle, on
       </Space>
     </div>
   );
-};
+});
 
 export default ChatHeader;
