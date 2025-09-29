@@ -1,0 +1,108 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id BigInt @id @default(autoincrement())
+  public_id String @unique @default(uuid())
+  username String @unique @db.VarChar(255)
+  email String @unique @db.VarChar(255)
+  display_name String @db.VarChar(255)
+  avatar_url String? @db.VarChar(255)
+  created_at DateTime @default(now())
+  last_login DateTime?
+  is_active Boolean @default(true)
+
+  // Relations
+  members Member[]
+  messages Message[]
+  emojis Emoji[]
+}
+
+model Member {
+  id BigInt @id @default(autoincrement())
+  public_id String @unique @default(uuid())
+  user_id BigInt
+  group_id BigInt
+  created_at DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  group Group @relation(fields: [group_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, group_id])
+}
+
+model Group {
+  id BigInt @id @default(autoincrement())
+  public_id String @unique @default(uuid())
+  name String @db.VarChar(255)
+  description String? @db.VarChar(255)
+  created_at DateTime @default(now())
+
+  // Relations
+  members Member[]
+  messages Message[]
+}
+
+model Message {
+  id BigInt @id @default(autoincrement())
+  public_id String @unique @default(uuid())
+  sender_id BigInt
+  group_id BigInt
+  content Json
+  is_deleted Boolean @default(false)
+  delivered_at DateTime?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  // Relations
+  sender User @relation(fields: [sender_id], references: [id], onDelete: Cascade)
+  group Group @relation(fields: [group_id], references: [id], onDelete: Cascade)
+  emojis Emoji[]
+  media Media[]
+}
+
+model Emoji {
+  id BigInt @id @default(autoincrement())
+  user_id BigInt
+  message_id BigInt
+  emoji_uni_code String @db.VarChar(255)
+  created_at DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  message Message @relation(fields: [message_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, message_id, emoji_uni_code])
+}
+
+model Media {
+  id BigInt @id @default(autoincrement())
+  public_id String @default(uuid())
+  message_id BigInt
+  media_name String @db.VarChar(255)
+  media_type String @db.VarChar(200)
+  media_size Int
+  mime_type String @db.VarChar(255)
+  s3_bucket_url String @db.VarChar(255)
+  s3_key String @db.VarChar(255)
+  thumbnail_s3_key String? @db.VarChar(255)
+  duration_seconds Int?
+  created_at DateTime @default(now())
+
+  // Relations
+  message Message @relation(fields: [message_id], references: [id], onDelete: Cascade)
+}

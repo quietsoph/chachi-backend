@@ -10,6 +10,10 @@ import { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketDa
 
 import { hasSpaces } from './utils/string';
 
+import { PrismaClient } from './generated/prisma';
+
+const prisma = new PrismaClient();
+
 const app = express();
 const router = express.Router();
 
@@ -163,6 +167,18 @@ io.on('connection', (socket) => {
   });
 });
 
-httpServer.listen(CONFIG.PORT, () => {
-  console.log(`Server listening on *:${CONFIG.PORT} 🚀`);
+httpServer.listen(CONFIG.PORT, async () => {
+  try {
+    await prisma.$connect();
+    console.log('Database connected');
+    console.log(`Server listening on ${CONFIG.PORT}`);
+  } catch (error) {
+    console.error('Database connection failed');
+    process.exit(1);
+  }
+});
+
+process.on('SIGINT', async () => {
+  await prisma.$disconnect();
+  process.exit();
 });
