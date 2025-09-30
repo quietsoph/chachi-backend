@@ -10,8 +10,10 @@
     "lint": "prettier --check ."
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@types/express": "^5.0.0",
     "@types/jest": "^29.5.14",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.5.2",
     "@types/socket.io": "^3.0.2",
     "nodemon": "^3.1.9",
@@ -25,8 +27,10 @@
   },
   "dependencies": {
     "@prisma/client": "^6.16.2",
+    "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "express": "^5.0.1",
+    "jsonwebtoken": "^9.0.2",
     "socket.io": "^4.8.1",
     "uuid": "^13.0.0"
   },

@@ -5,17 +5,18 @@ import { Server as IOServer } from 'socket.io';
 import { v4 as uuidv4 } from 'uuid';
 
 import CONFIG from './config';
-import { Message, PrivateMessageData, User, UserJoinData } from './types/chat';
-import { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData } from './types/socket';
+import { Message, PrivateMessageData, User, UserJoinData } from './shared/types/chat';
+import { ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData } from './shared/types/socket';
 
-import { hasSpaces } from './utils/string';
+import { hasSpaces } from './shared/utils/validateString';
 
 import { PrismaClient } from './generated/prisma';
 
-const prisma = new PrismaClient();
+import { UserController } from './services/user';
 
 const app = express();
 const router = express.Router();
+const prisma = new PrismaClient();
 
 const httpServer = http.createServer(app);
 const io = new IOServer<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>(httpServer, {
@@ -29,8 +30,14 @@ const io = new IOServer<ClientToServerEvents, ServerToClientEvents, InterServerE
 const connectedUsers = new Map<string, User>(); // a collection of connected users with [user name - user data] pairs
 const socketsToUsers = new Map<string, string>(); // [socket id - user name] pairs
 
+// CORS and body parsing must come first
 app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 app.use(express.json());
+
+// Mount controller
+const userController = new UserController(prisma);
+app.use('/api/users', userController.router);
+
 app.use(router);
 
 io.on('connection', (socket) => {
