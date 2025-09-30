@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext, useRef } from 'react';
+import { useState, useEffect, useContext, useRef, useCallback, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router';
 import { toast } from 'react-toastify';
 
@@ -25,6 +25,8 @@ const Chat = () => {
 
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const messageInputRef = useRef<HTMLTextAreaElement>(null);
+  const focusTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -39,6 +41,10 @@ const Chat = () => {
     const friendParam = searchParams.get('friend');
     if (friendParam) {
       setSelectedFriend(friendParam);
+      // Clear messages when switching friends
+      setMessages([]);
+      setFriendTyping(null);
+      setIsTyping(false);
     }
   }, [searchParams, currentUser, navigate]);
 
@@ -65,9 +71,12 @@ const Chat = () => {
   useEffect(() => {
     if (!isMobile) return;
 
+    let timeoutId: NodeJS.Timeout;
+
     const handleVisualViewportChange = () => {
       if (messagesContainerRef.current) {
-        setTimeout(() => {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
           const container = messagesContainerRef.current;
           if (container) {
             container.scrollTop = container.scrollHeight;
@@ -80,34 +89,45 @@ const Chat = () => {
     if (visualViewport) {
       visualViewport.addEventListener('resize', handleVisualViewportChange);
       return () => {
+        clearTimeout(timeoutId);
         visualViewport.removeEventListener('resize', handleVisualViewportChange);
       };
     }
   }, [isMobile, selectedFriend]);
 
-  // Socket event listeners
+  // Cleanup timeouts on unmount
   useEffect(() => {
-    if (!socket || !currentUser) return;
-
-    // Message received
-    const handleMessage = (message: Message) => {
-      setMessages((prev) => [...prev, message]);
-    };
-
-    // Typing indicators
-    const handleTyping = (data: { from: string; isTyping: boolean }) => {
-      if (data.from === selectedFriend) {
-        setFriendTyping(data.isTyping ? data.from : null);
+    return () => {
+      if (focusTimeoutRef.current) {
+        clearTimeout(focusTimeoutRef.current);
+      }
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
       }
     };
+  }, []);
 
-    // Error handling
-    const handleError = (error: string) => {
-      toast.error(error, {
-        position: 'top-right'
-      });
-      navigate('/login');
-    };
+  // Memoized socket event handlers to prevent re-creation
+  const handleMessage = useCallback((message: Message) => {
+    setMessages((prev) => [...prev, message]);
+  }, []);
+
+  const handleTyping = useCallback((data: { from: string; isTyping: boolean }) => {
+    if (data.from === selectedFriend) {
+      setFriendTyping(data.isTyping ? data.from : null);
+    }
+  }, [selectedFriend]);
+
+  const handleError = useCallback((error: string) => {
+    toast.error(error, {
+      position: 'top-right'
+    });
+    navigate('/login');
+  }, [navigate]);
+
+  // Socket event listeners - only depend on socket and currentUser
+  useEffect(() => {
+    if (!socket || !currentUser) return;
 
     socket.on('receive_private_message', handleMessage);
     socket.on('user_typing', handleTyping);
@@ -118,10 +138,10 @@ const Chat = () => {
       socket.off('user_typing', handleTyping);
       socket.off('error', handleError);
     };
-  }, [socket, currentUser, selectedFriend, navigate]);
+  }, [socket, currentUser, handleMessage, handleTyping, handleError]);
 
-  const handleSendMessage = () => {
-    if (!socket || !selectedFriend || !messageInput.trim()) return;
+  const handleSendMessage = useCallback(() => {
+    if (!socket || !selectedFriend || !messageInput.trim() || !currentUser) return;
 
     const messageData = {
       to: selectedFriend,
@@ -131,7 +151,7 @@ const Chat = () => {
     // Add message to local state immediately
     const localMessage: Message = {
       id: Date.now().toString(),
-      from: currentUser!,
+      from: currentUser,
       to: selectedFriend,
       content: messageInput.trim(),
       timestamp: new Date(),
@@ -144,9 +164,26 @@ const Chat = () => {
 
     // Focus input on mobile after sending
     if (isMobile && messageInputRef.current) {
-      setTimeout(() => {
+      // Clear any existing timeout
+      if (focusTimeoutRef.current) {
+        clearTimeout(focusTimeoutRef.current);
+      }
+
+      focusTimeoutRef.current = setTimeout(() => {
         messageInputRef?.current?.focus();
+        focusTimeoutRef.current = null;
       }, 100);
+    }
+  }, [socket, selectedFriend, messageInput, currentUser, isMobile]);
+
+  const handleTypingStop = () => {
+    if (!socket || !selectedFriend || !isTyping) return;
+    setIsTyping(false);
+    socket.emit('typing_stop', selectedFriend);
+
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+      typingTimeoutRef.current = null;
     }
   };
 
@@ -154,28 +191,39 @@ const Chat = () => {
     if (!socket || !selectedFriend || isTyping) return;
     setIsTyping(true);
     socket.emit('typing_start', selectedFriend);
-  };
 
-  const handleTypingStop = () => {
-    if (!socket || !selectedFriend || !isTyping) return;
-    setIsTyping(false);
-    socket.emit('typing_stop', selectedFriend);
+    // Auto-stop typing after 3 seconds of inactivity
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+    typingTimeoutRef.current = setTimeout(() => {
+      if (socket && selectedFriend) {
+        setIsTyping(false);
+        socket.emit('typing_stop', selectedFriend);
+      }
+    }, 3000);
   };
 
   const handleBackToHome = () => {
     navigate('/');
   };
 
+  // Show loading state
   if (!currentUser) {
     return <div>Loading...</div>;
   }
+
+  // Limit messages to prevent memory issues (keep last 1000)
+  const limitedMessages = useMemo(() => {
+    return messages.length > 1000 ? messages.slice(-1000) : messages;
+  }, [messages]);
 
   return (
     <div className="chat-page">
       <ChatContent
         selectedFriend={selectedFriend}
         currentUser={currentUser!}
-        messages={messages}
+        messages={limitedMessages}
         messageInput={messageInput}
         friendTyping={friendTyping}
         isMobile={isMobile}
