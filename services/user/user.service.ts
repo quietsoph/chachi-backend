@@ -27,22 +27,25 @@ export class UserService {
     // Check if user exists
     await this.checkUserExists(username, email);
 
-    // Create user
-    const hashedPassword = await hashPassword(password);
-    const user: User = await this.prisma.user.create({
-      data: {
-        username,
-        email,
-        password: hashedPassword,
-        display_name
-      }
-    });
+    // Use transaction to ensure atomicity
+    return await this.prisma.$transaction(async (tx) => {
+      // Create user
+      const hashedPassword = await hashPassword(password);
+      const user: User = await tx.user.create({
+        data: {
+          username,
+          email,
+          password: hashedPassword,
+          display_name
+        }
+      });
 
-    const token = generateToken(user.public_id);
-    return {
-      token,
-      user: this.formatUserResponse(user)
-    };
+      const token = generateToken(user.public_id);
+      return {
+        token,
+        user: this.formatUserResponse(user)
+      };
+    });
   }
 
   async login(data: LoginRequest): Promise<{ token: string; user: UserResponse }> {
@@ -63,17 +66,19 @@ export class UserService {
       throw new Error(USER_SERVICE.ERRORS.PASSWORD_NOT_MATCHED);
     }
 
-    // Update last login
-    await this.prisma.user.update({
-      where: { id: user.id },
-      data: { last_login: new Date() }
-    });
+    // Update last login using transaction to ensure atomicity
+    return await this.prisma.$transaction(async (tx) => {
+      const updatedUser: User = await tx.user.update({
+        where: { id: user.id },
+        data: { last_login: new Date() }
+      });
 
-    const token = generateToken(user.public_id);
-    return {
-      token,
-      user: this.formatUserResponse(user)
-    };
+      const token = generateToken(user.public_id);
+      return {
+        token,
+        user: this.formatUserResponse(updatedUser)
+      };
+    });
   }
 
   async getUserByPublicId(publicId: string): Promise<UserResponse | null> {

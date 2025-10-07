@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import http from 'http';
@@ -181,6 +182,7 @@ httpServer.listen(CONFIG.PORT, async () => {
     console.log(`Server listening on ${CONFIG.PORT}`);
   } catch (error) {
     console.error('Database connection failed');
+    console.error(`Error: ${error}`);
     process.exit(1);
   }
 });
