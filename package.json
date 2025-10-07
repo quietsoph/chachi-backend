@@ -9,6 +9,10 @@
     "format:check": "prettier --check .",
     "lint": "prettier --check ."
   },
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
     "@types/express": "^5.0.0",
