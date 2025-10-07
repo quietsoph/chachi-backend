@@ -1,8 +1,9 @@
 {
   "name": "backend",
   "version": "1.0.0",
+  "type": "module",
   "scripts": {
-    "start": "nodemon server.ts",
+    "start": "nodemon --exec tsx server.ts",
     "test": "vitest",
     "build": "tsc",
     "format": "prettier --write .",
